@@ -1,9 +1,9 @@
 from Integrate_Function import integrate
-import multiprocessing 
+import multiprocessing
 
 
 
-def parallel_integrate(x_min,x_max,boxes_per_core):
+def Get_X_Ranges(x_min, x_max, boxes_per_core):
     
     cores = multiprocessing.cpu_count()
     
@@ -15,19 +15,35 @@ def parallel_integrate(x_min,x_max,boxes_per_core):
         a_cores_range.append(x_min)
         x_min = x_min + x_range_per_core
         a_cores_range.append(x_min)
+        a_cores_range.append(boxes_per_core)
         x_ranges.append(a_cores_range)
+        
         print(x_ranges)
         
     return x_ranges
 
 
 
-def add(x):
-    return x[0]+x[1]
 
-def test_map():
-    LIST = [[1,2],[3,4],[5,6]]
-    result = map(add,LIST)
-    return result
+
+
+
+
+def parallel_integrate(x_min,x_max,boxes_per_core):
+    cores = multiprocessing.cpu_count()
+    x_ranges = Get_X_Ranges(x_min, x_max, boxes_per_core)
+    pool = multiprocessing.Pool(cores)
+    result = list(pool.map(integrate, x_ranges))
     
+    print(result)
+    addition = 0.0
+    for x in range(len(result)):
+        addition = addition + result[x]
+    return addition    
+
+
+
+
+
+
     
